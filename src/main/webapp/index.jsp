@@ -7,7 +7,7 @@
 <body>
 <h1><%= "Hello World!" %></h1>
 <br/>
-<h1><%= "Hello World! 반드시 엘리먼트는 네임이 있어야 한다 form_ok.jsp 서버로 보낸 데이터를 처리하는 것" %>
+<h1><%= "반드시 엘리먼트는 네임이 있어야 한다 form_ok.jsp 서버로 보낸 데이터를 처리하는 것" %>
 </h1>
 
 <form method = "get" action = "write_ok.jsp">

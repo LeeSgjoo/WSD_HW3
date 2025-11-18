@@ -132,7 +132,7 @@
             <td>
                 <!-- 버튼 그룹 스타일 적용 -->
                 <div class="btn-group btn-group-sm" role="group">
-                    <a href="edit.html?id=<%= id %>" class="btn btn-warning">수정</a>
+                    <a href="edit.jsp?id=<%= id %>" class="btn btn-warning">수정</a>
                     <a href="delete_ok.jsp?id=<%= id %>"
                        onclick="return confirm('삭제하시겠습니까?');"
                        class="btn btn-danger">삭제</a>

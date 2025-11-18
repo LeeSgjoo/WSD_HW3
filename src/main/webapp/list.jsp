@@ -85,10 +85,10 @@
 
 <!-- ⭐️ Bootstrap 컨테이너 적용 (페이지 중앙 정렬 및 여백) ⭐️ -->
 <div class="container mt-5">
-    <h2 class="mb-4 text-primary">학생 리소스 목록</h2>
+    <h2 class="mb-4 text-primary">학생 데이터 목록</h2>
 
     <!-- 버튼 스타일 적용 -->
-    <a href="write.html" class="btn btn-success mb-3">새 리소스 작성 클릭</a>
+    <a href="write.html" class="btn btn-success mb-3">새 학생 데이터 추가</a>
     <button onclick="location.href='list.jsp'" class="btn btn-secondary mb-3">목록 새로고침</button>
 
     <!-- 테이블 스타일 적용 -->

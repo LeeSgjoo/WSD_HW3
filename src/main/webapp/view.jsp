@@ -4,8 +4,8 @@
 <%@ page import="java.io.BufferedReader" %>
 <%@ page import="java.io.InputStreamReader" %>
 <%@ page import="java.io.OutputStream" %>
-<%@ page import="org.json.JSONArray" %>
 <%@ page import="org.json.JSONObject" %>
+<%-- org.json.JSONArray는 상세 조회에 필요 없으므로 JSONObject만 import --%>
 
 <%!
     private final String API_BASE_URL = "https://68e126f893207c4b47966580.mockapi.io/db";
@@ -20,7 +20,7 @@
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
 
-            if (conn.getResponseCode() != 200) return "[]";
+            if (conn.getResponseCode() != 200) return "{}"; // 상세 조회는 단일 객체이므로 빈 객체 반환
 
             BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
             String output;
@@ -30,7 +30,7 @@
             return response.toString();
 
         } catch (Exception e) {
-            return "[]";
+            return "{}"; // 예외 발생 시 빈 객체 반환
         }
     }
 
@@ -38,6 +38,7 @@
      * POST, PUT, DELETE 요청 (데이터 추가, 수정, 삭제)
      */
     public String postPutDeleteApi(String path, String method, String jsonInput) {
+        // [list.jsp의 POST/PUT/DELETE 로직 복사]
         try {
             URL url = new URL(API_BASE_URL + path);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -67,15 +68,39 @@
 
 <!-- -------------------------------------------------------- -->
 
+<%
+    request.setCharacterEncoding("UTF-8");
+
+    // 1. 요청 ID 추출 (list.jsp에서 전달받은 id 파라미터)
+    String id = request.getParameter("id");
+
+    // 2. Mock API로 GET 요청하여 상세 데이터 JSON 가져오기
+    String jsonString = getApi("/" + id);
+
+    JSONObject student = new JSONObject(jsonString);
+
+    // 3. JSON에서 스키마 필드 추출 (추출 전에 필드 존재 여부 확인 로직 권장)
+    String name = student.optString("name", "N/A");
+    String age = student.optString("age", "N/A");
+    String major = student.optString("major", "N/A");
+    String rc = student.optString("rc", "N/A");
+    String hometown = student.optString("hometown", "N/A");
+
+    // "id"가 없거나 유효하지 않은 경우 처리
+    if (name.equals("N/A") && !jsonString.equals("{}")) {
+        // 만약 API가 데이터를 못찾았다고 응답했으나, 유효한 JSON을 보낸 경우
+        // 이 부분에서 메시지를 설정하여 사용자에게 보여줄 수 있습니다.
+    }
+%>
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <!-- 뷰포트 설정 (Bootstrap 반응형 필수) -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>학생 리소스 목록</title>
+    <title><%= name %>님 상세 정보</title>
 
-    <!-- ⭐️ Bootstrap CSS CDN 추가 ⭐️ -->
+    <!-- Bootstrap CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet"
           xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
@@ -83,70 +108,52 @@
 </head>
 <body>
 
-<!-- ⭐️ Bootstrap 컨테이너 적용 (페이지 중앙 정렬 및 여백) ⭐️ -->
 <div class="container mt-5">
-    <h2 class="mb-4 text-primary">학생 리소스 목록</h2>
+    <h2 class="mb-4 text-info">학생 상세 정보 (ID: <%= id %>)</h2>
+    <h3 class="mb-3"><%= name %></h3>
 
-    <!-- 버튼 스타일 적용 -->
-    <a href="write.html" class="btn btn-success mb-3">새 리소스 작성 클릭</a>
-    <button onclick="location.href='list.jsp'" class="btn btn-secondary mb-3">목록 새로고침</button>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <!-- 테이블 형식으로 상세 정보 출력 -->
+            <table class="table table-bordered">
+                <tbody>
+                <tr>
+                    <th scope="row" class="w-25">이름 (name)</th>
+                    <td><%= name %></td>
+                </tr>
+                <tr>
+                    <th scope="row">나이 (age)</th>
+                    <td><%= age %></td>
+                </tr>
+                <tr>
+                    <th scope="row">전공 (major)</th>
+                    <td><%= major %></td>
+                </tr>
+                <tr>
+                    <th scope="row">생활관 (rc)</th>
+                    <td><%= rc %></td>
+                </tr>
+                <tr>
+                    <th scope="row">고향 (hometown)</th>
+                    <td><%= hometown %></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-    <!-- 테이블 스타일 적용 -->
-    <table class="table table-striped table-hover table-bordered">
-        <thead>
-        <tr class="table-dark">
-            <th>id (번호)</th>
-            <th>name (이름)</th>
-            <th>age (나이)</th>
-            <th>major (전공)</th>
-            <th>rc (생활관)</th>
-            <th>hometown (고향)</th>
-            <th>메뉴</th>
-        </tr>
-        </thead>
-        <tbody>
-        <%
-            // Controller/Logic 부분: API 호출 및 데이터 파싱
-            String jsonString = getApi("");
-            JSONArray jsonArray = new JSONArray(jsonString);
+    <!-- 버튼 그룹 -->
+    <div class="mt-4">
+        <button onclick="location.href='list.jsp'" class="btn btn-secondary me-2">목록 보기</button>
+        <a href="edit.html?id=<%= id %>" class="btn btn-warning me-2">수정 클릭</a>
+        <a href="delete_ok.jsp?id=<%= id %>"
+           onclick="return confirm('<%= name %>님의 정보를 삭제하시겠습니까?');"
+           class="btn btn-danger">삭제 클릭</a>
+    </div>
 
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject post = jsonArray.getJSONObject(i);
-
-                // 실제 API JSON 필드명 그대로 추출
-                String id = post.getString("id");               // id (번호)
-                String name = post.getString("name");           // name (이름)
-                String age = String.valueOf(post.getInt("age")); // age (나이)
-                String major = post.getString("major");         // major (전공)
-                String rc = post.getString("rc");               // rc (생활관)
-                String hometown = post.getString("hometown");   // hometown (고향)
-        %>
-        <tr>
-            <td><%= id %></td>
-            <!-- 상세보기 링크 -->
-            <td><a href="view.jsp?id=<%= id %>"><%= name %></a></td>
-            <td><%= age %></td>
-            <td><%= major %></td>
-            <td><%= rc %></td>
-            <td><%= hometown %></td>
-            <td>
-                <!-- 버튼 그룹 스타일 적용 -->
-                <div class="btn-group btn-group-sm" role="group">
-                    <a href="edit.html?id=<%= id %>" class="btn btn-warning">수정</a>
-                    <a href="delete_ok.jsp?id=<%= id %>"
-                       onclick="return confirm('삭제하시겠습니까?');"
-                       class="btn btn-danger">삭제</a>
-                </div>
-            </td>
-        </tr>
-        <%
-            } // end of for loop
-        %>
-        </tbody>
-    </table>
 </div>
 
-<!-- Bootstrap JS CDN 추가 (</body> 닫는 태그 직전에 위치) -->
+<!-- Bootstrap JS CDN -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>

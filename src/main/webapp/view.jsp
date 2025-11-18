@@ -145,7 +145,7 @@
     <!-- 버튼 그룹 -->
     <div class="mt-4">
         <button onclick="location.href='list.jsp'" class="btn btn-secondary me-2">목록 보기</button>
-        <a href="edit.html?id=<%= id %>" class="btn btn-warning me-2">수정 클릭</a>
+        <a href="edit.jsp?id=<%= id %>" class="btn btn-warning me-2">수정 클릭</a>
         <a href="delete_ok.jsp?id=<%= id %>"
            onclick="return confirm('<%= name %>님의 정보를 삭제하시겠습니까?');"
            class="btn btn-danger">삭제 클릭</a>

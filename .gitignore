@@ -1,10 +1,6 @@
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-.kotlin
-
-### IntelliJ IDEA ###
+# ---------------------------------------------------------------- #
+# IntelliJ IDEA Generated Files
+# ---------------------------------------------------------------- #
 .idea/modules.xml
 .idea/jarRepositories.xml
 .idea/compiler.xml
@@ -12,7 +8,40 @@ target/
 *.iws
 *.iml
 *.ipr
+.idea/.gitignore
+.idea/vcs.xml
+.idea/misc.xml
+.idea/jsLibraryMappings.xml
+.idea/encodings.xml
+/shelf/
+/workspace.xml
+/httpRequests/
+/dataSources/
+/dataSources.local.xml
 
+# ---------------------------------------------------------------- #
+# Operating System Generated Files
+# ---------------------------------------------------------------- #
+.DS_Store
+.kotlin
+
+# ---------------------------------------------------------------- #
+# Maven Build Artifacts (Docker 배포 수정 영역)
+# ---------------------------------------------------------------- #
+
+# 1. target 디렉토리 자체를 무시하지 않습니다.
+# 2. target 디렉토리 내의 모든 내용을 무시하도록 재정의합니다.
+/target/*
+
+# 3. WAR 파일만 예외적으로 추적 대상에 포함시킵니다. (Docker 빌드를 위해 필수)
+!/target/*.war
+
+# 4. Maven Wrapper 파일 유지 (mvnw 실행 시 필요)
+!.mvn/wrapper/maven-wrapper.jar
+
+# ---------------------------------------------------------------- #
+# Legacy IDE Files (Eclipse, NetBeans)
+# ---------------------------------------------------------------- #
 ### Eclipse ###
 .apt_generated
 .classpath
@@ -35,5 +64,9 @@ build/
 ### VS Code ###
 .vscode/
 
-### Mac OS ###
-.DS_Store
+# ---------------------------------------------------------------- #
+# 기타
+# ---------------------------------------------------------------- #
+*.log
+*.class
+*.bak
